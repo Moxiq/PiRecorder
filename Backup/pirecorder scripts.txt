@@ -1,0 +1,2 @@
+raspivid -o - -t 0 -hf -w 1280 -h 720 -fps 40 -fl -a 8 | cvlc -vvv stream:///dev/stdin --sout '#rtp{sdp=rtsp://:8554}' :demux=h264
+raspivid -a 12 -t 0 -w 1280 -h 720 -ih -fps 15 -o udp://192.168.0.32:5000
