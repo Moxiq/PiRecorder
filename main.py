@@ -1,9 +1,13 @@
-import cv2 as cv
 from time import sleep
 from queue import Queue
 from threading import Thread
-from saveVideo import SaveVideo
+
+import cv2 as cv
+
 from multitimer import MultiTimer
+
+from savevideo import SaveVideo
+from motiondetect import MotionDetection
 
 
 class Program:
@@ -19,24 +23,33 @@ class Program:
             if ret:
                 self.frame_queue.put(frame)
 
-    def process_frame(self, video_length, preview=True,):
+    def process_frame(self, video_length, preview=True):
         sleep(3) # Wait for the first frames to come in
+
+        md = MotionDetection()
+
         timer = MultiTimer(video_length, self.recorder.save_stream, runonstart=False)
         timer.start()
 
         while True:
             frame = self.frame_queue.get()
 
-            if self.recorder.isOpened():
+            # md.process_frame(frame)
+
+            if self.recorder.is_open():
                 self.recorder.write_frame(frame)
 
             if preview:
                 cv.imshow("Camera", frame)
-            
+ 
             if cv.waitKey(1) & 0xFF == ord('q'):
                 self.recorder.save_stream(perm=True)
                 break
-        
+
+    # def motion_detection(self):
+    #     while True:
+
+    #     pass
 
 
 if __name__ == "__main__":
@@ -45,34 +58,3 @@ if __name__ == "__main__":
     process_thread = Thread(target=prog.process_frame, args=((10,)), kwargs={'preview':True})
     stream_thread.start()
     process_thread.start()
-
-
-# def main_loop():
-
-#     while True:
-#         ret, frame = vcap.read()
-#         # show image if it could be retrieved from stream
-#         if ret:
-#             cv.imshow("video", frame)
-
-#             if recorder is not None and recorder.isOpened():
-#                 recorder.write_frame(frame)
-
-#         if cv.waitKey(1) & 0xFF == ord('q'):
-#             break
-            
-
-#     vcap.release()
-#     recorder.close_stream(full_stop=True)
-#     cv.destroyAllWindows()
-
-
-
-
-
-# vcap = cv.VideoCapture("udp://192.168.0.32:5000/")
-# recorder = None
-
-# if vcap.isOpened():
-#     main_loop()
-

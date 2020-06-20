@@ -6,7 +6,7 @@ import random
 
 class SaveVideo():
     FOURCC = cv.VideoWriter_fourcc(*'XVID')         # Format
-    FPS = 60                                        # FPS of the stream         
+    FPS = 30                                        # FPS of the stream         
     DIMS = (1280, 720)                              # Resolution of the stream
 
     def __init__(self):
@@ -24,27 +24,29 @@ class SaveVideo():
         if not perm:
             self.outstream = self.get_outstream()
 
+    def is_open(self) -> bool:
+        return self.outstream is not None
+
     def get_outstream(self):
         return cv.VideoWriter(self.filename, self.FOURCC, self.FPS, self.DIMS)
 
-    def get_filename(self) -> str:
+    @staticmethod
+    def get_filename() -> str:
         filename = "Recordings/" + datetime.datetime.now().strftime("%Y-%m-%d %H-%M" + ".avi")
         if os.path.isfile(filename):
             index = filename.find('.')
             return filename[:index] + " (" + str(random.randint(1,20)) + ")" + filename[index:]
         return filename
 
-    def isOpened(self) -> bool:
-        return self.outstream is not None
-
-    def make_folder(self):
+    @staticmethod
+    def make_folder():
         if not os.path.exists(os.path.dirname(os.path.realpath(__file__)) +  "\Recordings"):
-            os.makedirs(os.path.dirname(os.path.realpath(__file__)) +  "\Recordings", exist_ok=False)
+            os.makedirs(os.path.dirname(os.path.realpath(__file__))
+            +  "\Recordings", exist_ok=False)
 
 
 
 
 if __name__ == '__main__':
     sv = SaveVideo()
-
     
