@@ -12,8 +12,8 @@ from motiondetect import MotionDetection
 
 class Program:
 
-    def __init__(self):
-        self.cap = cv.VideoCapture("udp://192.168.0.32:5000/")
+    def __init__(self, ip_stream):
+        self.cap = cv.VideoCapture(ip_stream)
         self.frame_queue = Queue()
         self.recorder = SaveVideo()
 
@@ -53,7 +53,7 @@ class Program:
 
 
 if __name__ == "__main__":
-    prog = Program()
+    prog = Program("udp://192.168.0.32:5000/")
     stream_thread = Thread(target=prog.get_stream, args=())
     process_thread = Thread(target=prog.process_frame, args=((10,)), kwargs={'preview':True})
     stream_thread.start()
