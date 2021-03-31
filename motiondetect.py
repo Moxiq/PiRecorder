@@ -6,7 +6,7 @@ import numpy as np
 class MotionDetection:
     def __init__(self):
         # Tries to find background by looking at history of frames
-        self.fbgb = cv.createBackgroundSubtractorMOG2(300, 400, True)
+        self.bgs = cv.createBackgroundSubtractorMOG2(300, 400, True)
         self.framecount = 0
 
     def process_frame(self, frame):
@@ -16,7 +16,7 @@ class MotionDetection:
         resized_frame = cv.resize(frame, (0, 0), fx=0.25, fy=0.25)
 
         # Get the foreground mask
-        fgmask = self.fbgb.apply(resized_frame)
+        fgmask = self.bgs.apply(resized_frame)
 
         # Count all the non zero pixels within the mask
         count = np.count_nonzero(fgmask)
